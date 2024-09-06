@@ -49,6 +49,39 @@ Abrimos con el block de notas y añadimos la siguiente configuracion:
 Y ahora si navegamos a blog.test tendremos la ruta de nuestro proyecto
 
 
+# Notas del proyecto
+
+* El archivo web.php que esta ubicado en el directorio **routes/web.php** es el archivo que se encarga de manejar las rutas de nuestro proyecto.
+
+
+
+
+# Pasos para clonar el repositorio del proyecto
+1. Clonar el repositorio
+```bash
+    git clone https://github.com/laravel/blog.git <- url de prueba
+```
+2. Instalar dependencias
+```bash
+    cd blog
+    composer install
+```
+3. Generar llave de seguridad
+```bash
+    php artisan key:generate
+```
+4. Crear el archivo de variables de entorno
+Copiar el archivo .env.example a .env
+Cambiar las credenciales de las dependencias usadas
+
+5. Crear la base de datos (si es SQLite)
+Crear el archivo database/database.sqlite
+
+6. Correr las migraciones
+```bash	
+	php artisan migrate
+```
+
 
 
 
