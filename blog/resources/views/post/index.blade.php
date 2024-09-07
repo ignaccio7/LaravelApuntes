@@ -16,7 +16,7 @@
 
 	@if (true)
 		<p>Contenido de prueba</p>
-	@endif
+	@endif	
 
 </body>
 </html>

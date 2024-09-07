@@ -228,11 +228,173 @@ public function show($postName, $postCategory = null)
 }
 ```
 
+## Componentes en Laravel
 
+Existen de dos tipos:
+* Componentes anonimos <- Que son los que creamos directamente colocando click derecho y crear un componente.blade.php
+* Componentes de clase <- Que son los que creamos utilizando el comando *php artisan make:component <nombreComponente>*
 
+> NOTA: En los componentes anonimos metemos toda la logica al recibir props dentro del mismo archivo. Mientras que en los componentes de clase luego de ejecutar el comando se crean dos archivos: Uno para la logica del negocio que es una clase en *app/View/Components* y otro para el componente que es una vista en *resources/views/components*.
 
+> NOTA2: Cuando nosotros pasemos atributos a un componente los que no lo capturemos en las props se pasa a una variable $attributes
 
+### Componentes anonimos
 
+Para ello lo ideal es crear un directorio en el que se ubiquen todos los componentes que necesitemos.
+
+Esto lo crearemos en la ruta *resources/views/components*
+
+El componente que definimos para ejemplo sera:
+
+```html
+<div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+  <span class="font-medium">Danger alert!</span> Change a few things up and try submitting again.
+</div>
+```
+Y nosotros como lo utilizamos:
+En nuestra vista lo llamaremos de la siguiente manera:
+
+```html
+<x-alert />
+<!-- o -->
+ <x-alert > </x-alert>
+```
+### SLOT en componentes
+Y si nosotros queremos mostrar un contenido dentro de la alerta podemos hacerlo de la siguiente manera:
+
+```html	
+<div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+  <span class="font-medium">Danger alert! </span> 
+  {{ $slot }}
+</div>
+```
+
+Y lo añadiriamos de la siguiente manera:
+```php
+<x-alert>
+	Aqui se mostrara el contenido de la alerta
+</x-alert>
+```
+
+> Como añadimos mas de un slot podemos hacerlo de la siguiente manera:
+
+```php
+<x-alert>
+	<x-slot name="message">
+		Mensaje
+	</x-slot>
+	Aqui se mostrara el contenido de la alerta
+</x-alert>  
+
+// Y el componente se veria asi:
+
+<div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+  <span class="font-medium">{{ $message ?? 'Info Alert' }}! </span> 
+  {{ $slot }}
+</div>
+```	
+
+Por ultimo para ver como funciona con los parametros que le pasemos al componente los trabajariamos de la siguiente manera:
+
+```php
+{{-- Para recibir las props en un componente --}}
+@props(['type' => ''])
+
+@php
+  switch ($type) {
+    case 'danger':
+      $class = 'text-red-800 bg-red-50 dark:bg-gray-800 dark:text-red-400';
+      break;
+    case 'success':
+      $class = 'text-green-800 bg-green-50 dark:bg-gray-800 dark:text-green-400';
+      break;
+    case 'warning':
+      $class = 'text-yellow-800 bg-yellow-50 dark:bg-gray-800 dark:text-yellow-400';
+      break;
+    default:
+      $class = 'text-gray-800 bg-gray-50 dark:bg-gray-800 dark:text-gray-400';
+      break;
+  }
+@endphp
+
+{{-- <div class="{{ $class }} p-4 text-sm rounded-lg" role="alert">
+  <span class="font-medium">{{ $message ?? 'Info Alert' }}! </span> 
+  {{ $slot }}
+</div> --}}
+<div {{ $attributes->merge(["class" => "p-4 text-sm rounded-lg" . $class]) }} role="alert">
+  <span class="font-medium">{{ $message ?? 'Info Alert' }}! </span> 
+  {{ $slot }}
+</div>
+<p>Texto de prueba</p>
+```
+
+### Componentes de clase
+
+Ejecutamos el siguiente comando:
+
+```bash
+    php artisan make:component Alert2
+```
+
+> Todo lo del controlador queda conectado con el componente
+
+El archivo controller quedaria de la siguiente manera:
+
+```php
+<?php
+
+namespace App\View\Components;
+
+use Closure;
+use Illuminate\Contracts\View\View;
+use Illuminate\View\Component;
+
+class Alert2 extends Component
+{
+    public $class = "";
+    /**
+     * Create a new component instance.
+     */
+    public function __construct($type = "", )
+    {
+        switch ($type) {
+            case 'danger':
+              $class = 'text-red-800 bg-red-50 dark:bg-gray-800 dark:text-red-400';
+              break;
+            case 'success':
+              $class = 'text-green-800 bg-green-50 dark:bg-gray-800 dark:text-green-400';
+              break;
+            case 'warning':
+              $class = 'text-yellow-800 bg-yellow-50 dark:bg-gray-800 dark:text-yellow-400';
+              break;
+            default:
+              $class = 'text-gray-800 bg-gray-50 dark:bg-gray-800 dark:text-gray-400';
+              break;
+          }
+          
+        $this->class = $class;
+    }
+
+    /**
+     * Get the view / contents that represent the component.
+     */
+    public function render(): View|Closure|string
+    {
+        return view('components.alert2');
+    }
+}
+
+```
+
+Y la vista:
+
+```php
+<div {{ $attributes->merge(["class" => "p-4 text-sm rounded-lg" . $class]) }} role="alert">
+    <span class="font-medium">{{ $message ?? 'Info Alert' }}! </span> 
+    {{ $slot }}
+</div>
+<p>Texto de prueba</p>
+```
 
 
 
