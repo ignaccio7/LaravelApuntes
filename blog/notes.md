@@ -645,8 +645,45 @@ Si nosotros quisieramos hacer un rollback
 > NOTA: Este rollback se hara solo al ultimo lote que hayamos ejecutado. Los lotes lo podremos identificar en le tabla migrations en la columna batch. Conforme nosotros vayamos ejecutando migraciones este lote incrementara
 
 Que pasa si queremos ejecutar varias migraciones de diferentes lotes.
+
+Una opcion seria ejectura el rollback uno por uno hasta llegar hasta donde queremos y luego ir migrando de nuevo.
+
+Para ejecutar todos los metodos down de todas las migraciones y luego posteriormente las up:
+
+Y ya todas las migraciones estaran en el mismo lote.
+
 ```bash
     php artisan migrate:refresh
+```
+
+A parte de eso tenemos este comando fresh. El cambio esque este metodo eliminara las tablas y luego ejecutara las migraciones. Por lo cual todos los datos que tengammos comenzaran como si fueran nuevos.
+
+```bash
+    php artisan migrate:fresh
+```
+
+Si esque quisieramos modificar una columan de una tabla la consulta para la migracion seria (suponiendo que queremos modificar la tabla user):
+
+```bash
+    php artisan make:migration add_avatar_to_users_table
+```
+
+Esto convertira nuestra migracion y podremos ver el cambio en las lineas:
+Schema::create('users'  a  Schema::table('users'
+
+Y la manera en la que podriamos adicionar un campo es de la siguiente:
+
+```php
+en el metodo UP
+agregariamos algo asi:
+
+$table->string('avatar');
+$table->string('avatar')->nullable(); para que tome el valor por edfecto de null
+$table->string('avatar')->nullable()->after('email'); para que el campo se coloque despues del email
+
+Y tambien deberiamos modificar el metodo DOWN
+$table->dropColumn('avatar');
+
 ```
 
 
