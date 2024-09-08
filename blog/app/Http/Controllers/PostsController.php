@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\Post;
+
 class PostsController extends Controller
 {
     //
@@ -12,6 +14,11 @@ class PostsController extends Controller
     }*/
 
     public function __invoke() {
-        return view('posts');
+
+        // Como recuperamos el listado de la base de datos
+        //$posts = Post::all();
+        $posts = Post::orderBy('id', 'desc')->get();
+
+        return view('posts', compact('posts'));
     }
 }

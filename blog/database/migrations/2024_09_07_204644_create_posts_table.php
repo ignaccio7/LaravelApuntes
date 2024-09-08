@@ -15,8 +15,11 @@ return new class extends Migration
             $table->id();
             
             $table->string('title');
-            $table->string('categoria');
+            $table->string('category');
             $table->text('content');
+            // nuevos campos para probar el casting
+            $table->timestamp('published_at')->default(NOW());
+            $table->boolean('is_active')->default(true);
 
             $table->timestamps();
         });

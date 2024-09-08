@@ -4,18 +4,47 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Post</title>
+	<style>
+		html{
+			font-family: system-ui;
+			color-scheme:dark;
+		}
+		.post{
+			width: 500px;
+			margin-inline:auto;
+			border:1px solid gray;
+			padding: 2rem;
+			border-radius:1rem;
+
+			& h2 {
+				color:#09f;
+			}
+
+			& h3 {
+				color:tomato;
+			}
+		}
+	</style>
 </head>
 <body>
-	<h2>
-		Aqui se mostrara el post con Nombre: 
-		<?= $postName ?>		
-	</h2>
-	<p>
-		Como estamos en una archivo de blade tambien se puede mostrar de la siguiente manera el nombre: {{ $postName }}
-	</p>
+
+	<a href="/posts">Volver a la lista</a>
+
+	<div class="post">
+		<h2>
+			Titulo: 
+			{{ $post->title }}
+		</h2>
+		<h3> {{ $post->category }} </h3>
+		<p>
+			{{ $post->content }}
+		</p>
+	</div>
+
+	<a href="/post/{{ $post->id }}/edit">Editar Post</a>
 
 	@if (true)
-		<p>Contenido de prueba</p>
+	<p>Contenido de prueba</p>
 	@endif	
 
 </body>

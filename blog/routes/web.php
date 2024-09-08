@@ -27,6 +27,12 @@ Route::get('posts', PostsController::class);
 });*/
 Route::get('post/create', [PostController::class, 'createPost']);
 
+// esta sera la ruta para crear el post con metodo POST
+Route::post('post', [PostController::class,'store']);
+// esta sera la ruta para editar el registro por el metodo GET
+Route::get('post/{post}/edit', [PostController::class,'edit']); // obtiene la vista
+Route::put('post/{post}', [PostController::class,'update']); // edita el contenido
+
 
 // Rutas con parametros
 /*Route::get('posts/{postId}', function($postId) {
@@ -53,31 +59,41 @@ Route::get('post/create', [PostController::class, 'createPost']);
 Route::get('post/{postName}/{postCategory?}', [PostController::class, 'show']);
 
 Route::get('prueba', function () {
-    /*
-    CREAR UN NUEVO POST
+    
+    //CREAR UN NUEVO POST
     // Para usar al modelo haremos uso del modelo Post
     $post = new Post;
     // agregamos los valores que iran en el registro
-    $post->title = 'Titulo de prueba2';
-    $post->content = 'Contenido de prueba2';
-    $post->categoria = 'Categoria de prueba2';
+    $post->title = 'Titulo de prueba1 PRObanDO';
+    $post->content = 'Contenido de prueba1';
+    $post->categoria = 'Categoria de prueba1'; // category
     // Guardamos el registro
     $post->save();
-     */
+    /* */
 
      /* OBTENER UN POST */
      // Para bsucarlo por el id
-    //  $post = Post::find(1);
+    $post = Post::find(1);
      //  Para buscarlo por el title
     //  $post = Post::where('title','=','Titulo de prueba1')->first();
     //  // Si quisieramos modificar este post
     //  $post->categoria = 'Categoria FrontEnd';
     //  $post->save();
 
-    // return $post;
+    // formatemos la fecha de published luego de castearla para poder usar el format
+    $formattedPublishedAt = $post->published_at ? $post->published_at->format('d-m-Y') : null;
+
+    // Devolver el post junto con la fecha formateada
+    return response()->json([
+        'post' => $post,
+        'published_at' => $formattedPublishedAt
+    ]);
+
+    return $post;
 
     /* OBTENER TODOS LOS POSTS O MAS DE UN REGISTRO*/
     //$posts = Post::all();
+    //return $posts;
     // Registros con condicion id >= 2
     /*$posts = Post::where('id', '>=', 2)->get();
     // podemos ordenar los registros
@@ -91,8 +107,8 @@ Route::get('prueba', function () {
     return $posts;*/
 
     /* ELIMINAR UN POST */
-    $post = Post::find(1);
-    $post->delete();
+    //$post = Post::find(1);
+    //$post->delete();
 
-    return "Post eliminado";
+    //return "Post eliminado";
 });

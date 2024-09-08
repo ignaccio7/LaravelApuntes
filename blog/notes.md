@@ -686,31 +686,431 @@ $table->dropColumn('avatar');
 
 ```
 
+# Eloquent en php es un ORM que viene instalado por defecto
+
+Un ejemplo para ver como esta funcionando creariamos una nueva vista en la pagina y una serie de operaciones en nuestro modelo:
+
+Para crear el modelo:
+
+```bash
+    php artisan make:model Post
+```
+
+El modelo que se crearia estaria en  *app/Models/Post.php* y quedaria de la siguiente forma:
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Post extends Model
+{
+    use HasFactory;
+
+    // aqui vamos a espeficiar que tabla va administrar
+    // Nota: Si nosotros no especificamos la siguiente linea para especificar con que tabla trabajara entonces lo que hara es trabajar por defecto si la tabla se llama "Post" entonces la tabla trabajada sera "posts" esa convencion sigue
+    protected $table = 'posts';
+    // eloquent es un framework escrito en ingles se deberia trabajar de esa forma
+
+    // Como la utilizamos
+}
+
+```
+
+Y la ruta para como lo vamos a usar:
+
+```php
+Route::get('prueba', function () {
+    /*
+    CREAR UN NUEVO POST
+    // Para usar al modelo haremos uso del modelo Post
+    $post = new Post;
+    // agregamos los valores que iran en el registro
+    $post->title = 'Titulo de prueba2';
+    $post->content = 'Contenido de prueba2';
+    $post->categoria = 'Categoria de prueba2';
+    // Guardamos el registro
+    $post->save();
+     */
+
+     /* OBTENER UN POST */
+     // Para bsucarlo por el id
+    //  $post = Post::find(1);
+     //  Para buscarlo por el title
+    //  $post = Post::where('title','=','Titulo de prueba1')->first();
+    //  // Si quisieramos modificar este post
+    //  $post->categoria = 'Categoria FrontEnd';
+    //  $post->save();
+
+    // return $post;
+
+    /* OBTENER TODOS LOS POSTS O MAS DE UN REGISTRO*/
+    //$posts = Post::all();
+    // Registros con condicion id >= 2
+    /*$posts = Post::where('id', '>=', 2)->get();
+    // podemos ordenar los registros
+    $posts = Post::orderBy('id', 'desc')->get();
+    // Para seleccionar los campos requeridos o cantidad de registros
+    $posts = Post::orderBy('id', 'desc')
+                ->select('id', 'title', 'content')
+                ->take(2)
+                ->get();
+
+    return $posts;*/
+
+    /* ELIMINAR UN POST */
+    $post = Post::find(1);
+    $post->delete();
+
+    return "Post eliminado";
+});
+
+```
+
+## Mutadores Accesores y Casting 
+
+Lo podremos ver en el siguientes archivos con descripcion en los comentarios
+
+Adicionando 2 nuevos campos a nuestra tabla POST en la migracion.
+
+```php
+Schema::create('posts', function (Blueprint $table) {
+    $table->id();
+            
+    $table->string('title');
+    $table->string('categoria');
+    $table->text('content');
+    // nuevos campos para probar el casting
+    $table->timestamp('published_at')->default(NOW());
+    $table->boolean('is_active')->default(true);
+
+    $table->timestamps();
+});
+```
+
+Como tal nosotros hariamos las modificaciones respectivas en el modelo que habriamos creado anteriormente
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+// para los mutadores y accesores
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
+class Post extends Model
+{
+    use HasFactory;
+
+    // aqui vamos a espeficiar que tabla va administrar
+    // Nota: Si nosotros no especificamos la siguiente linea para especificar con que tabla trabajara entonces lo que hara es trabajar por defecto si la tabla se llama "Post" entonces la tabla trabajada sera "posts" esa convencion sigue
+    protected $table = 'posts';
+    // eloquent es un framework escrito en ingles se deberia trabajar de esa forma
+
+    /*  CAST  */
+    // Por defecto eloquent nos devuelve los valores de la BD como una cadena asi sea una fecha o un boleano para poder castearlos tanto al recibir como al registrar usamos esta funcion
+    // Hacemos esto porque un claro ejemplo cuando tratamos de manejar fechas lo maneja como cadena y no tiene los mismos metodos y is es un bool entonces true es 1
+    protected function casts() : array {
+        // aqui indicariamos lo campos que queremos que castee en y desde la BD
+        return [
+            "published_at" => 'datetime', //2024-06-06
+            "is_active" => 'boolean',
+        ];
+    }
+
+    /* Como la utilizamos los mutadores y accesores */
+    // hacemos este metodo para que cuando quieran almacenar una cadena en el campo title como ser "EsTE SErA Un...." y lo convertira a "este sera un..." SET
+    // Ahora como hacemos para cuando el post se recupere el title la primera letra este en mayucula GET
+    protected function title():Attribute {
+        return Attribute::make(            
+            // este metodo seria antes de registrar en la BD: muta el valor antes de almacenar en la BD
+            set: function($value){
+                return strtolower($value);
+            },
+            // este seria al obtener (accesor) de la BD: no modifica la BD solo la salida al usuario
+            get: function($value){
+                return ucfirst($value);
+            }
+        );
+    }
+    // para probar la fecha
+    protected function createdAt():Attribute {
+        return Attribute::make(
+            get: function($value) {
+                return $value."get";
+            }
+        );
+    }    
+
+}
+
+```
+
+Y la manera de utilizarla en nuestra ruta seria similar
+
+```php
+Route::get('prueba', function () {
+    
+    //CREAR UN NUEVO POST
+    // Para usar al modelo haremos uso del modelo Post
+    $post = new Post;
+    // agregamos los valores que iran en el registro
+    $post->title = 'Titulo de prueba1 PRObanDO';
+    $post->content = 'Contenido de prueba1';
+    $post->categoria = 'Categoria de prueba1';
+    // Guardamos el registro
+    $post->save();
+    /* */
+
+     /* OBTENER UN POST */
+     // Para bsucarlo por el id
+    $post = Post::find(1);
+     //  Para buscarlo por el title
+    //  $post = Post::where('title','=','Titulo de prueba1')->first();
+    //  // Si quisieramos modificar este post
+    //  $post->categoria = 'Categoria FrontEnd';
+    //  $post->save();
+
+    // formatemos la fecha de published luego de castearla para poder usar el format
+    $formattedPublishedAt = $post->published_at ? $post->published_at->format('d-m-Y') : null;
+
+    // Devolver el post junto con la fecha formateada
+    return response()->json([
+        'post' => $post,
+        'published_at' => $formattedPublishedAt
+    ]);
+
+    return $post;
+```
+
+## Para los seeders
+
+Los encontramos en la ruta *database/seeders* ahi podriamos indicar que datos queremos por defecto en nuestra base de datos
+
+Para ejectuar una migracions hacemos uso del comando
+
+```bash
+    php artisan db:seed
+```
+
+De que manera podriamos hacer un fresh(delete de las tablas) y un seed
+
+```bash
+    php artisan migrate:fresh --seed
+```
+
+Como creamos un archivo para nuestro seed de una tabla
+
+```bash
+    php artisan make:seeder UserSeeder
+```
+
+Nuestro archivo seed creado de post como ejemplo seria:
+
+```php
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+
+use App\Models\Post;
+
+class PostSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $post = new Post();
+
+        $post->title = 'Post 1';
+        $post->content = "Contenido 1";
+        $post->category = "Categoria 1";
+        $post->published_at = now();
+
+        $post->save();
+
+        $post = new Post();
+
+        $post->title = 'Post 2';
+        $post->content = "Contenido 2";
+        $post->category = "Categoria 2";
+
+        $post->save();
+
+        $post = new Post();
+
+        $post->title = 'Post 3';
+        $post->content = "Contenido 3";
+        $post->category = "Categoria 3";
+
+        $post->save();
+    }
+}
+
+```
+
+Y el Database seeder que es el que se ejecutara cuando coloquemos *seed* en la cli
+
+```php
+<?php
+
+namespace Database\Seeders;
+
+//use App\Models\User;
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+
+use Database\Seeders\UserSeeder;
+use Database\Seeders\PostSeeder;
 
 
+class DatabaseSeeder extends Seeder
+{
+    /**
+     * Seed the application's database.
+     */
+    public function run(): void
+    {
+        // User::factory(10)->create();
+        /*
+        User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+        ]);
+        */
+        // Aqui llamamos a nuestros seeders
+        $this->call([
+            UserSeeder::class,
+            PostSeeder::class
+        ]);
 
+    }
+}
 
+```
 
+## Factory 
 
+Los factoris funcionan como fabricas a los cuales nosotros especificaremos un modelos y laravel con su libreria **faker** de php nos creara datos de prueba que no son reales pero que nos serviran para desarrollo.
 
+Para crear un factori en este caso de post:
 
+> NOTA: es importante seguir la convencion: <nombreModelo>Factory
 
+```bash
+    php artisan make:factory PostFactory
+```
 
+Esto crearia un factori dentor de la carpeta *database/factories*
 
+El factori final seria:
 
+```php
+<?php
 
+namespace Database\Seeders;
 
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
 
+use App\Models\Post;
 
+class PostSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $post = new Post();
 
+        $post->title = 'Post 1';
+        $post->content = "Contenido 1";
+        $post->category = "Categoria 1";
+        $post->published_at = now();
 
+        $post->save();
 
+        $post = new Post();
 
+        $post->title = 'Post 2';
+        $post->content = "Contenido 2";
+        $post->category = "Categoria 2";
 
+        $post->save();
 
+        $post = new Post();
 
+        $post->title = 'Post 3';
+        $post->content = "Contenido 3";
+        $post->category = "Categoria 3";
 
+        $post->save();
 
+        Post::factory(20)->create();
+    }
+}
+
+```
+
+Lo usaremos en nuestro seeder Post
+
+```php
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+
+use App\Models\Post;
+
+class PostSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $post = new Post();
+
+        $post->title = 'Post 1';
+        $post->content = "Contenido 1";
+        $post->category = "Categoria 1";
+        $post->published_at = now();
+
+        $post->save();
+
+        $post = new Post();
+
+        $post->title = 'Post 2';
+        $post->content = "Contenido 2";
+        $post->category = "Categoria 2";
+
+        $post->save();
+
+        $post = new Post();
+
+        $post->title = 'Post 3';
+        $post->content = "Contenido 3";
+        $post->category = "Categoria 3";
+
+        $post->save();
+
+        Post::factory(20)->create();
+    }
+}
+
+```
 
 
 
