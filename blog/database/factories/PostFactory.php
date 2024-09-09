@@ -22,6 +22,7 @@ class PostFactory extends Factory
             'content' => fake()->text(500),
             'category' => fake()->word(1),
             'published_at' => $this->faker->dateTime(),
+            'slug' => fake()->slug(),
         ];
     }
 }

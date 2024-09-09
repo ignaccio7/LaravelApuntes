@@ -18,20 +18,38 @@ Route::get('/', [HomeController::class, 'index']);
 /*Route::get('/posts', function() {
     return ("Aqui se mostraran todos los posts");
 });*/
-Route::get('posts', PostsController::class);
+//Route::get('posts', PostsController::class);
+// Como definimos rutas con nombre eso si quisieramos cambiar el posts por articulos en la ruta
+Route::get('articulos', PostsController::class)->name('posts');
 
 
 // Si quisieramos una ruta get /create tendriamos que definirla aqui arriba ya que si lo definimos abajo del que detecta parametro lo detectara "create" como param
 /*Route::get('post/create', function() {
     return "Aqui podras crear lo que querais";
 });*/
-Route::get('post/create', [PostController::class, 'createPost']);
+//Route::get('post/create', [PostController::class, 'createPost']);
+Route::get('post/create', [PostController::class, 'createPost'])
+    ->name('post.create');
 
 // esta sera la ruta para crear el post con metodo POST
-Route::post('post', [PostController::class,'store']);
+//Route::post('post', [PostController::class,'store']);
+Route::post('post', [PostController::class,'store'])
+    ->name('post.store');
+
 // esta sera la ruta para editar el registro por el metodo GET
-Route::get('post/{post}/edit', [PostController::class,'edit']); // obtiene la vista
-Route::put('post/{post}', [PostController::class,'update']); // edita el contenido
+//Route::get('post/{post}/edit', [PostController::class,'edit']); // obtiene la vista
+Route::get('post/{post}/edit', [PostController::class,'edit'])
+    ->name('post.edit');
+
+//Route::put('post/{post}', [PostController::class,'update']); // edita el contenido
+Route::put('post/{post}', [PostController::class,'update'])
+    ->name('post.update');
+
+// PASANDO A RUTAS CON NOMBRE
+
+
+
+Route::delete('post/{post}', [PostController::class,'destroy']); // eliminar el contenido
 
 
 // Rutas con parametros
@@ -56,7 +74,9 @@ Route::put('post/{post}', [PostController::class,'update']); // edita el conteni
     return "Aqui se mostrara el post con Nombre: $postName y sin categoria";    
 });*/
 
-Route::get('post/{postName}/{postCategory?}', [PostController::class, 'show']);
+//Route::get('post/{postName}/{postCategory?}', [PostController::class, 'show']);
+Route::get('post/{post}', [PostController::class, 'show'])
+    ->name('post.show');
 
 Route::get('prueba', function () {
     

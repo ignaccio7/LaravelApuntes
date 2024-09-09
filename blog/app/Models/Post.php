@@ -11,6 +11,19 @@ class Post extends Model
 {
     use HasFactory;
 
+    // aqui especificamos que campos queremos compartir
+    protected $fillable = [
+        'title',
+        'slug',
+        'category',
+        'content',
+    ];
+
+    // tambien podemos especificar que campos queremoe evitar que nose guarden con asignacion masiva
+    protected $guarded = [
+        'is_active',
+    ];
+
     // aqui vamos a espeficiar que tabla va administrar
     // Nota: Si nosotros no especificamos la siguiente linea para especificar con que tabla trabajara entonces lo que hara es trabajar por defecto si la tabla se llama "Post" entonces la tabla trabajada sera "posts" esa convencion sigue
     protected $table = 'posts';
@@ -49,6 +62,12 @@ class Post extends Model
                 return $value."get";
             }
         );
-    }    
+    }
+
+    // Para la url amigable e indicarle a laravel que el campo por defecto que busque no sea el id sino por el slug
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 
 }

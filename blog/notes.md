@@ -1112,6 +1112,32 @@ class PostSeeder extends Seeder
 
 ```
 
+## Rutas con nombre
+
+Si nosotros quisieramos añadir rutas con nombre y cambiar la url de *posts* a *articulos*. Enves de estar cambiando directamente en todas las partes de nuestro codigo podriamos definirlo de la siguinte manera:
+
+La ruta definida seria asi /<nombreRuta>/ y el name seria como nosotros accederemos y redireccionaremos a esa ruta en nuestra aplicacion.
+
+```php
+//Route::get('posts', PostsController::class);
+// Como definimos rutas con nombre eso si quisieramos cambiar el posts por articulos en la ruta
+Route::get('articulos', PostsController::class)->name('posts');
+```
+
+Y para redireccionar o mandar desde la aplicacion o controlador cambiaria a esto
+
+```php
+/* app  */
+{{--<a href="/posts">Volver a la lista</a>--}}
+<a href="{{ route('posts') }}">Volver a la lista</a>
+
+/* controller  */
+//return redirect('/posts');
+return redirect()->route('posts');
+```
+
+> NOTA: La convencion para el colocar un nombre a la ruta para manejarla en la aplicacion es ->name(<nombreRuta><nombreMetodo>) 
+
 
 
 

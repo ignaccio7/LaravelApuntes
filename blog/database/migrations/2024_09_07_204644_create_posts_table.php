@@ -21,6 +21,9 @@ return new class extends Migration
             $table->timestamp('published_at')->default(NOW());
             $table->boolean('is_active')->default(true);
 
+            // Para la url amigable
+            $table->string('slug')->unique();
+
             $table->timestamps();
         });
     }

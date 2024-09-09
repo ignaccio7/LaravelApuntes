@@ -28,7 +28,8 @@
 </head>
 <body>
 
-	<a href="/posts">Volver a la lista</a>
+	{{--<a href="/posts">Volver a la lista</a>--}}
+	<a href="{{ route('posts') }}">Volver a la lista</a>
 
 	<div class="post">
 		<h2>
@@ -41,7 +42,14 @@
 		</p>
 	</div>
 
-	<a href="/post/{{ $post->id }}/edit">Editar Post</a>
+	{{--<a href="/post/{{ $post->id }}/edit">Editar Post</a>--}}
+	<a href="{{ route('post.edit',[$post]) }}">Editar Post</a>
+
+	<form action="/post/{{$post->id}}" method="POST">
+		@csrf
+		@method('DELETE')
+		<input type="submit" value="Eliminar post">
+	</form>
 
 	@if (true)
 	<p>Contenido de prueba</p>

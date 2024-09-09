@@ -17,7 +17,11 @@ class PostsController extends Controller
 
         // Como recuperamos el listado de la base de datos
         //$posts = Post::all();
-        $posts = Post::orderBy('id', 'desc')->get();
+        //$posts = Post::orderBy('id', 'desc')->get();
+
+        // Para añadir paginacion
+        $posts = Post::orderBy('id', 'desc')
+                    ->paginate(5);
 
         return view('posts', compact('posts'));
     }

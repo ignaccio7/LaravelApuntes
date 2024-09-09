@@ -17,11 +17,14 @@ class PostController extends Controller
         return view("post.create");
     }
 
-    public function show($postName, $postCategory = null)
-    {
-        if($postCategory){
-            return "Aqui se mostrara el post con Nombre: $postName y con categoria: $postCategory";    
-        }
+    //public function show($postName, $postCategory = null)
+    public function show(Post $post)
+    {      
+        //$fpost = Post::where('slug', $post)->first();  
+          
+        //if($postCategory){
+          //  return "Aqui se mostrara el post con Nombre: $postName y con categoria: $postCategory";    
+        //}
 
         //return "Aqui se mostrara el post con Nombre: $postName y sin categoria";
      
@@ -30,9 +33,9 @@ class PostController extends Controller
         ]);*/
 
         // Como alternativa a estar escribiendo postName => $postName usamos el compact que hace lo mismo
-        //return view("post.index", compact('postName'));
+        //return view("post.index", compact('postName'));        
 
-        $post = Post::find($postName);
+        //$post = Post::find($postName);
         //return $post;
 
         return view("post.index", compact('post'));
@@ -45,33 +48,73 @@ class PostController extends Controller
         //return request()->title; o tambien en parametro en la funcion
 
         // Para crear un nuevo post
-        $post = new Post();
+        /*$post = new Post();
         $post->title = $request->title;
         $post->content = $request->content;
+        $post->slug = $request->slug;
         $post->category = $request->category;
-        $post->save();
+        $post->save();*/
+        // Una manera de hacer mas corto esto ya que es un lio estar poniendo campo por campo todos los que mandamos podriamos validar que campos nos estan llegando de los formularios para ello lo hacemos en el modelo en el atributo filleable cuales campos aceptara
+
+        // como agregamos validaciones Si esque hubiera errores nos retorna una variable $errors a la cual veremos en la vista
+        $request->validate([
+            'title' => 'required|min:5|max:255',
+            'category' => ['required','min:5','max:100'],
+            // Para indicarle que el slug sea unico en la tabla posts
+            'slug' => 'required|unique:posts',
+            'content' => 'required',
+        ]);
+
+        Post::create($request->all());
 
         //return $request->all();
-        return redirect('/posts');
+        //return redirect('/posts');
+        return redirect()->route('posts');
     }
 
-    public function edit($post) {
-
-        $post = Post::find($post);
+    // Para acortar un poco esto se le puede decir automaticamente a laravel que busque ese post al recibir el parametro y asi nos ahorramos una linea
+    //public function edit($post) {
+    //    $post = Post::find($post);
+    public function edit(Post $post) {
 
         return view("post.edit", compact('post'));
     }
 
     public function update(Request $request, $post) {
-        $findPost = Post::find($post);
+
+        //$findPost = Post::find($post);
+        $findPost = Post::where('slug',$post)->first();
+        //return $findPost;
+
+        $request->validate([
+            'title' => 'required|min:5|max:255',
+            'category' => ['required','min:5','max:100'],
+            // Para indicarle que el slug sea unico en la tabla posts Pero como es edicion que excluya este registro
+            'slug' => "required|unique:posts,slug,{$findPost->id}",
+            'content' => 'required',
+        ]);        
         
-        $findPost->title = $request->title;
+        /*$findPost->title = $request->title;
         $findPost->content = $request->content;
+        $findPost->slug = $request->slug;
         $findPost->category = $request->category;
-        $findPost->save();
+        $findPost->save();*/
 
-        return redirect("/post/{$findPost->id}");
+        // El metodo update tambien sirve para asignacion masiva
+        $findPost->update($request->all());
 
+        //return redirect("/post/{$findPost->id}");
+        return redirect()->route('post.show',[$findPost->slug]);
+
+    }
+
+    public function destroy($post) {
+        //return "Eliminando el post {$post}";
+        $post = Post::find($post);
+        $post->delete();
+
+        //return redirect('/posts');
+        return redirect()->route('posts');
     }
 
 
