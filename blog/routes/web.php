@@ -5,7 +5,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\PostController;
+use App\Models\Phone;
 use App\Models\Post;
+use App\Models\User;
+use App\Models\Comment;
 
 /*Route::get('/', function () {
     //return view('welcome');
@@ -131,4 +134,49 @@ Route::get('prueba', function () {
     //$post->delete();
 
     //return "Post eliminado";
+});
+
+
+Route::get('pruebauser', function () {
+    
+    // User::create([
+    //     'name' => 'Test User',
+    //     'email' => 'test@example.com',
+    //     'password' => bcrypt('secret'),
+    // ]);
+
+    // Phone::create([
+    //     'number' => '123456789',
+    //     'user_id' => 13
+    // ]);
+
+    // $user = User::where('id',13)
+    //             ->with('phone')
+    //             ->first();
+
+    // return $user;
+
+    // $comment = new Comment;
+    // $comment->content = 'Este es un comentario';
+    // $comment->post_id = 1;
+    // $comment->save();
+    // return $comment;
+
+    // Comment::create([
+    //     'content' => 'Este es un comentario',
+    //     'post_id' => 1
+    // ]);
+
+    // return 'Comentario creado';
+
+    // $comments = Post::find(1)->comments;
+    // return $comments;
+
+    $post = Post::find(1);
+    $post->comments()->create([
+        'content' => 'Este es un comentario asociado al post'
+    ]);
+
+    return 'Comentario creado';
+
 });

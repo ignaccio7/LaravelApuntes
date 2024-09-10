@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
@@ -44,10 +43,5 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-
-    // Metodo para recuperar la informacion de la otra tabla 
-    public function phone(){
-        return $this->hasOne(Phone::class);
     }
 }

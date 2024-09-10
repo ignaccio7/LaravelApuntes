@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePostRequest;
 use Illuminate\Http\Request;
 use App\Models\Post;
 
@@ -42,7 +43,9 @@ class PostController extends Controller
     }
 
     // funcion para almacenar y guardar el post del form
-    public function store(Request $request) {
+    //public function store(Request $request) {
+    // Para agregar las validaciones
+    public function store(StorePostRequest $request) {
         // Para recuperar datos que envian aqui
         //return request()->all(); o tambien
         //return request()->title; o tambien en parametro en la funcion
@@ -57,13 +60,13 @@ class PostController extends Controller
         // Una manera de hacer mas corto esto ya que es un lio estar poniendo campo por campo todos los que mandamos podriamos validar que campos nos estan llegando de los formularios para ello lo hacemos en el modelo en el atributo filleable cuales campos aceptara
 
         // como agregamos validaciones Si esque hubiera errores nos retorna una variable $errors a la cual veremos en la vista
-        $request->validate([
-            'title' => 'required|min:5|max:255',
-            'category' => ['required','min:5','max:100'],
-            // Para indicarle que el slug sea unico en la tabla posts
-            'slug' => 'required|unique:posts',
-            'content' => 'required',
-        ]);
+        // $request->validate([
+        //     'title' => 'required|min:5|max:255',
+        //     'category' => ['required','min:5','max:100'],
+        //     // Para indicarle que el slug sea unico en la tabla posts
+        //     'slug' => 'required|unique:posts',
+        //     'content' => 'required',
+        // ]);
 
         Post::create($request->all());
 

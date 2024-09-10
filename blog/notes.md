@@ -1139,9 +1139,155 @@ return redirect()->route('posts');
 > NOTA: La convencion para el colocar un nombre a la ruta para manejarla en la aplicacion es ->name(<nombreRuta><nombreMetodo>) 
 
 
+## Como creamos un formulario para las validaciones
 
+Para crear un archivo para que valide nuestra tabla post 
 
+```bash
+    php artisan make:request StorePostRequest
+```	
+Se creara un archivo dentro de la carpeta *app/Http/Requests* con el nombre StorePostRequest.php al cual tendra el siguiente contenido ya modificado:
 
+```php
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class StorePostRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    // Este metodo se utiliza para validar que el usuario que esta intentando hacer un registro en la BD sea un usuario autorizado
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    // Aqui colocaremos todas las reglas de validacion a verificar
+    public function rules(): array
+    {
+        return [
+            'title' => 'required|min:5|max:255',
+            'category' => ['required','min:5','max:100'],
+            // Para indicarle que el slug sea unico en la tabla posts
+            'slug' => 'required|unique:posts',
+            'content' => 'required',
+        ];
+    }
+
+    // Para personalizar los mensajes de error
+    public function messages() {
+        return [
+            //'title.required' => 'El campo titulo es requerido',
+            // Para que funcione el cambio que pusimos en los attributes deberiamos modificar el mensaje asi:
+            'title.required' => 'El campo :attribute es requerido',
+            'slug.required' => 'El campo slug es requerido',
+        ];
+    }
+
+    // Otra manera de personalizar el campo podria ser title slug content etc es con los attributes
+    // Pero para usar los attributes deberiamos modificar la funcion messages
+    public function attributes() {
+        return [
+            'title' => 'Titulo',
+            'slug' => 'Ruta',
+            'content' => 'Contenido',
+        ];
+    }
+}
+
+```
+
+Y cambiariamos el metodo del controlador para que use este nuevo metodo de validacion
+
+```php
+public function store(StorePostRequest $request) {
+        return "abc";
+```
+
+## Relacion de 1:1 entre 2 modelos
+
+### Para crear el modelo y la migracion
+
+```bash
+    php artisan make:model Phone -m
+```
+
+Y el archivo de migracion sera:
+
+```php
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('phones', function (Blueprint $table) {
+            $table->id();
+
+            $table->string('number');
+
+            //Para la foranea
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('phones');
+    }
+};
+
+```
+
+Y en el modelo de User y Phone agregariamos estas funciones para vincular los modelos
+```php
+// Model User <-  Function para obtener el phone y lo obtendriamos al hacer $uewr->phone
+public function phone(){
+    return $this->hasOne(Phone::class);
+}
+// Model Phone <- Function para obtener el user y lo obtendriamos al hacer $phone->user
+public function user(){
+    return $this->belongsTo(User::class);
+}
+```
+
+## Relacion de 1:n entre 2 modelos
+
+### Para crear el modelo y la migracion
+
+Le añadiremos comentarios a los Posts y 1 post tendra n comentarios
+
+```bash
+    php artisan make:model Comment -m
+```
+
+Y el 
 
 
 

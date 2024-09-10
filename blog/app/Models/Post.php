@@ -70,4 +70,9 @@ class Post extends Model
         return 'slug';
     }
 
+    // Para obtener los comentarios de un post
+    public function comments(){
+        return $this->hasMany(Comment::class);
+    }
+
 }
