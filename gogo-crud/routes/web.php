@@ -12,11 +12,14 @@ Route::get('/', function () {
 // Route::get('note/{id}', [NoteController::class, 'index'])->name('note.index');
 
 // CRUD
-Route::get('/note', [NoteController::class, 'index'])->name('note.index');
-Route::get('/note/create', [NoteController::class, 'create'])->name('note.create');
-Route::post('/note/store', [NoteController::class, 'store'])->name('note.store');
-Route::get('/note/edit/{note}', [NoteController::class, 'edit'])->name('note.edit');
-Route::put('/note/update/{note}',[NoteController::class, 'update'])->name('note.update');
-Route::get('/note/show/{note}', [NoteController::class, 'show'])->name('note.show');
-Route::delete('/note/destroy/{note}',[NoteController::class, 'destroy'])->name('note.destroy');
+// Route::get('/note', [NoteController::class, 'index'])->name('note.index');
+// Route::get('/note/create', [NoteController::class, 'create'])->name('note.create');
+// Route::post('/note/store', [NoteController::class, 'store'])->name('note.store');
+// Route::get('/note/edit/{note}', [NoteController::class, 'edit'])->name('note.edit');
+// Route::put('/note/update/{note}',[NoteController::class, 'update'])->name('note.update');
+// Route::get('/note/show/{note}', [NoteController::class, 'show'])->name('note.show');
+// Route::delete('/note/destroy/{note}',[NoteController::class, 'destroy'])->name('note.destroy');
+
+// Para abreviar todo este CRUD lo podemos hacer con un resource
+Route::resource('/note',NoteController::class);
 

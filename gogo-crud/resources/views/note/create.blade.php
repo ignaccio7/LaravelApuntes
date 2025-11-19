@@ -15,11 +15,18 @@
       Introduzca el titulo de la nota:
       <input type="text" name="title" id="title">
     </label>
+    @error('title')
+        <span style="color: red;">{{ $message }}</span>
+    @enderror
 
     <label for="description">
       Introduzca la descripcion de la nota:
       <input type="text" name="description" id="description">
     </label>
+
+    @error('description')
+        <span style="color: red;">{{ $message }}</span>
+    @enderror
 
     <input type="submit" value="Crear la nota">
   </form>
