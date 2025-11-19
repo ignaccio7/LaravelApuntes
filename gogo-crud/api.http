@@ -1,0 +1,26 @@
+### GET 
+GET http://localhost:8000/api/post
+
+### POST 
+POST http://localhost:8000/api/post
+Content-Type: application/json
+
+{
+  "title": "Nodejs",
+  "description": "Framework para el desarrollo backend"
+}
+
+### GET 
+GET http://localhost:8000/api/post/2
+
+### PUT 
+PUT http://localhost:8000/api/post/2
+Content-Type: application/json
+
+{
+  "title": "Nodejs EDITED",
+  "description": "Framework para el desarrollo backend EDITED"
+}
+
+### DELETE 
+DELETE http://localhost:8000/api/post/2
