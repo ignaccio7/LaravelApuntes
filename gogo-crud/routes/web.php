@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\NoteController;
+use App\Http\Controllers\ProductsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -22,4 +23,6 @@ Route::get('/', function () {
 
 // Para abreviar todo este CRUD lo podemos hacer con un resource
 Route::resource('/note',NoteController::class);
+
+Route::get('/products', [ProductsController::class, 'index'])->name('product.index');
 

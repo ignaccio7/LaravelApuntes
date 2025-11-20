@@ -14,3 +14,9 @@ php artisan install:api
 php artisan make:controller PostController --resource
 php artisan make:resource PostResource
 ```
+
+Para los seeders
+```bash 
+php artisan make:model Products -mcr
+php artisan make:seeder ProductsSedder
+```
