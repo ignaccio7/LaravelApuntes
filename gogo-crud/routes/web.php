@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ProductsController;
+use App\Http\Middleware\Example;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -22,7 +23,15 @@ Route::get('/', function () {
 // Route::delete('/note/destroy/{note}',[NoteController::class, 'destroy'])->name('note.destroy');
 
 // Para abreviar todo este CRUD lo podemos hacer con un resource
-Route::resource('/note',NoteController::class);
+Route::resource('/note', NoteController::class);
 
 Route::get('/products', [ProductsController::class, 'index'])->name('product.index');
-
+// middleware
+// Route::get('/products2', [ProductsController::class, 'show'])->name('product.show')->middleware(Example::class);
+// groupmiddleware
+Route::middleware([Example::class])->group(function () {
+    Route::get('/products2', [ProductsController::class, 'show'])->name('product.show');
+    // si por x motivo quisieramos descargar del middleware a una ruta del grupo
+    Route::get('/products2', [ProductsController::class, 'show'])->name('product.show')->withoutMiddleware([Example::class]);
+    Route::get('/products2', [ProductsController::class, 'show'])->name('product.show');
+});

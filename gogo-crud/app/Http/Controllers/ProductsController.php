@@ -6,8 +6,8 @@ use App\Models\Products;
 use Illuminate\Http\Request;
 
 class ProductsController extends Controller
-{    
-    
+{
+
     /**
      * Display a listing of the resource.
      */
@@ -37,9 +37,12 @@ class ProductsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Products $products)
+    // public function show(Products $products)
+    public function show()
     {
-        //
+        // Esta sera la ruta protegida con el middleware
+
+        return Products::all();
     }
 
     /**

@@ -13,23 +13,24 @@ class ProductsSedder extends Seeder
      */
     public function run(): void
     {
-        Products::create([
-            'name' => 'Laptop',
-            'short_description' => 'Laptop de 15 pulgadas',
-            'description' => 'Laptop de 15 pulgadas con procesador de 64 bits',
-            'price' => 2500.00
-        ]);
-        Products::create([
-            'name' => 'Laptop',
-            'short_description' => 'Laptop de 15 pulgadas',
-            'description' => 'Laptop de 15 pulgadas con procesador de 64 bits',
-            'price' => 2500.00
-        ]);
-        Products::create([
-            'name' => 'Laptop',
-            'short_description' => 'Laptop de 15 pulgadas',
-            'description' => 'Laptop de 15 pulgadas con procesador de 64 bits',
-            'price' => 2500.00
-        ]);
+        // Products::create([
+        //     'name' => 'Laptop',
+        //     'short_description' => 'Laptop de 15 pulgadas',
+        //     'description' => 'Laptop de 15 pulgadas con procesador de 64 bits',
+        //     'price' => 2500.00
+        // ]);
+        // Products::create([
+        //     'name' => 'Laptop',
+        //     'short_description' => 'Laptop de 15 pulgadas',
+        //     'description' => 'Laptop de 15 pulgadas con procesador de 64 bits',
+        //     'price' => 2500.00
+        // ]);
+        // Products::create([
+        //     'name' => 'Laptop',
+        //     'short_description' => 'Laptop de 15 pulgadas',
+        //     'description' => 'Laptop de 15 pulgadas con procesador de 64 bits',
+        //     'price' => 2500.00
+        // ]);
+        Products::factory(10)->create();
     }
 }
