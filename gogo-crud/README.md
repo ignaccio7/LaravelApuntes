@@ -34,7 +34,13 @@ php artisan make:middleware Example
 Luego de clonar el repo del proyecto
 
 ```bash
+composer install
+cp .env.example .env
 php artisan key:generate
+php artisan migrate
+npm install
+composer run dev
+
 php artisan config:clear
 php artisan cache:clear
 ```
